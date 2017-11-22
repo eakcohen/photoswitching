@@ -28,9 +28,8 @@ Q0_0 = zeros(m,m);
 Q0_1 = Q0_0; 
 
 %%%WHEN X(\DELTA) != 1
-for n=0:2 
+for n=0:2
     [Q, endstate] = qij_4state(n,lambda,mu,Delta);
-    
     Q0 = Q(:,[1:m-1 end]); %ends not at one
     Q1 = Q(:,end-1); %ends at 1 
     
@@ -50,21 +49,21 @@ for n=0:2
             for i=1:m-1
                 probs_in_state(i) = cdf('Gamma',Delta-delta,1,(-G(i,i))^-1)/cdf('Gamma',Delta,1,(-G(i,i))^-1);
             end 
-            Q1_0 = [probs_in_state probs_in_state(1)]'.*Q1;
-            Q1_1 = (ones(1,m) - [probs_in_state probs_in_state(1)])'.*Q1;
+            Q1_1 = [probs_in_state probs_in_state(1)]'.*Q1;
+            Q1_0 = (ones(1,m) - [probs_in_state probs_in_state(1)])'.*Q1;
     elseif n==2
 			probs = zeros(m,m-1); 
 			probs(1,1) = cdf('Gamma',Delta-delta,2,(-G(1,1))^-1)/cdf('Gamma',Delta,2,(-G(1,1))^-1);
 		if abs(G(2,2) - G(1,1)) < 1e-4 %To reduce numerical overflow.  
 			probs(1,2) = probs(1,1); 
 		else %Sum of 2 exponential distributions (closed form). 
-			probs(1,2) = (-G(2,2)*(1-exp(-G(1,1)*(Delta-delta)))+G(1,1)*(1-exp(-G(2,2)*(Delta-delta))))/(-G(2,2)*(1-exp(-G(1,1)*(Delta)))+G(1,1)*(1-exp(-G(2,2)*(Delta))));
+			probs(1,2) = 1 - ((-G(2,2)*(1-exp(-G(1,1)*(Delta-delta)))+G(1,1)*(1-exp(-G(2,2)*(Delta-delta))))/(-G(2,2)*(1-exp(-G(1,1)*(Delta)))+G(1,1)*(1-exp(-G(2,2)*(Delta)))));
         end 
 			probs(2,2) = probs(1,2); 
 			probs(3,:) = probs(1,:);
-        
-        Q1_0 = sum(probs.*endstate,2);
-        Q1_1 = sum((logical(probs)-probs).*endstate,2);
+            
+        Q1_1 = sum((probs).*endstate,2);
+        Q1_0 = sum((1-probs).*endstate,2);
     end 
     
     Q_0 = Q_0 + [Q0_0(:,1:m-1) Q1_0 Q0_0(:,end)]; %emission matrix when 0 is observed. 

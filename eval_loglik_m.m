@@ -5,11 +5,11 @@ likelihood = 1:s(1);
 
     lambdas = lam_trans_m(lambda,Delta); %Transform lambda back from real line. 
     lambdas(isnan(lambdas)) = 0; %Needed for parameters already known to the experimenter. 
-    nu = nu_trans_m(nu); %Transform nu parameters back from the real line. 
+    nu = nu_trans_m(nu);
+    nu(isnan(nu)) = 0; %Transform nu parameters back from the real line. 
     nu = [nu 1-sum(nu) 0];
-    lambda = lambdas(1:2*(m+1)); 
+    lambda = lambdas(1:2*(m+1));
     mu = lambdas(2*(m+1)+1:end-2); %lambdas(end-1) = delta and lambdas(end) = FPR (false positive rate). 
-
 %Need to get emission matrices needed in the log-likelihood from the lambda, mu, nu vectors and from delta (noise parameter). Here delta = lambdas(end-1). 
 	if m==0 
 		[BP0, BP1] = emission_delta_endstate_3state(lambda, mu, lambdas(end-1),Delta);

@@ -57,24 +57,24 @@ for n=0:2
             if abs(G(1,1) - G(2,2)) < 1e-4 %To reduce numerical overflow. 
                 probs(1,2) = cdf('Gamma',Delta-delta,2,(-G(1,1))^-1)/cdf('Gamma',Delta,2,(-G(1,1))^-1);
             else %sum of 2 exponentials (closed form). 
-                probs(1,2) = (-G(2,2)*(1-exp(-G(1,1)*(Delta-delta)))+G(1,1)*(1-exp(-G(2,2)*(Delta-delta))))/(-G(2,2)*(1-exp(-G(1,1)*(Delta)))+G(1,1)*(1-exp(-G(2,2)*(Delta))));
+                probs(1,2) = 1 - (-G(2,2)*(1-exp(-G(1,1)*(Delta-delta)))+G(1,1)*(1-exp(-G(2,2)*(Delta-delta))))/(-G(2,2)*(1-exp(-G(1,1)*(Delta)))+G(1,1)*(1-exp(-G(2,2)*(Delta))));
             end 
         probs(2,2) = probs(1,2);
             if abs(G(2,2) - G(3,3)) < 1e-4 
                 probs(2,3) = cdf('Gamma',Delta-delta,2,(-G(2,2))^-1)/cdf('Gamma',Delta,2,(-G(2,2))^-1);
             else %sum of 2 exponentials (closed form). 
-                probs(2,3) = (-G(2,2)*(1-exp(-G(3,3)*(Delta-delta)))+G(3,3)*(1-exp(-G(2,2)*(Delta-delta))))/(-G(2,2)*(1-exp(-G(3,3)*(Delta)))+G(3,3)*(1-exp(-G(2,2)*(Delta))));
+                probs(2,3) = 1 - (-G(2,2)*(1-exp(-G(3,3)*(Delta-delta)))+G(3,3)*(1-exp(-G(2,2)*(Delta-delta))))/(-G(2,2)*(1-exp(-G(3,3)*(Delta)))+G(3,3)*(1-exp(-G(2,2)*(Delta))));
             end
             
             if abs(G(1,1) - G(3,3)) < 1e-4
                 probs(3,3) = cdf('Gamma',Delta-delta,2,(-G(1,1))^-1)/cdf('Gamma',Delta,2,(-G(1,1))^-1);
             else %sum of 2 exponentials (closed form). 
-                probs(3,3) = (-G(3,3)*(1-exp(-G(1,1)*(Delta-delta)))+G(1,1)*(1-exp(-G(3,3)*(Delta-delta))))/(-G(3,3)*(1-exp(-G(1,1)*(Delta)))+G(1,1)*(1-exp(-G(3,3)*(Delta))));
+                probs(3,3) = 1 - (-G(3,3)*(1-exp(-G(1,1)*(Delta-delta)))+G(1,1)*(1-exp(-G(3,3)*(Delta-delta))))/(-G(3,3)*(1-exp(-G(1,1)*(Delta)))+G(1,1)*(1-exp(-G(3,3)*(Delta))));
             end 
         probs(4,:) = probs(1,:); %starts at 1
 
-        Q1_0 = sum(probs.*endstate,2);
-        Q1_1 = sum((logical(probs)-probs).*endstate,2);
+        Q1_1 = sum(probs.*endstate,2);
+        Q1_0 = sum((1-probs).*endstate,2);
     end 
 		Q_0 = Q_0 + [Q0_0(:,1:m-1) Q1_0 Q0_0(:,end)]; 
 		Q_1 = Q_1 + [Q0_1(:,1:m-1) Q1_1 Q0_1(:,end)]; 
